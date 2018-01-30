@@ -1,34 +1,33 @@
-#GOOGLE CODE-IN COMMIT PRAISE KEK
-from socket import *
-import threading
-from os import system
-from os import name
-nickname = raw_input("Nickname: ")
-host = raw_input("Server: ")
-port = 2137
-size = 1024
-
-system('cls' if name == 'nt' else 'clear')
-
-s = socket(AF_INET, SOCK_STREAM)
-s.connect((host, port))
-s.send(nickname)
+import asyncore, socket
+import platform
+import webbrowser
 
 
-def recv_data():
-    while 1:
-        data = s.recv(size)
-        if data:
-            print data
+host = ''
+nickname = platform.node()
+port = 997
+
+class Client(asyncore.dispatcher_with_send):
+    def __init__(self, host, port, nickname):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect((host, port))
+        self.out_buffer = nickname
+
+    def handle_close(self):
+        self.close()
+
+    def handle_read(self):
+
+        self.data = self.recv(1024)
+        print self.data
+        webbrowser.open(self.data, new=2);
+        self.close()
+
+c = Client(host, port, nickname)
+asyncore.loop(1)
+       
+            
 
 
-def send_data():
-    while 1:
-        send = raw_input("-> ")
-        send_nickname = nickname + ': ' + send
-        s.send(send_nickname)
 
-t1 = threading.Thread(target=recv_data)
-t2 = threading.Thread(target=send_data)
-t1.start()
-t2.start()
