@@ -32,13 +32,12 @@ class EchoHandler(asyncore.dispatcher_with_send):
         if not self.out_buffer:
             self.close()
 
-
 class Client(asyncore.dispatcher_with_send):
     def __init__(self, host, port):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((host, port))
-        self.out_buffer = ''
+        self.out_buffer = 'kajak'
 
     def handle_close(self):
         self.close()
@@ -48,16 +47,12 @@ class Client(asyncore.dispatcher_with_send):
         while 1:
             try: 
                 data = self.recv(1024)
+                if data:
+                    webbrowser.open(data, new=2);
             except socket.error:
                     if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
                         time.sleep(0)
-                        continue
-    
-    def handle_open(self):
-        print data
-        webbrowser.open(data, new=2);
-    
-                
+                        continue 
 
 s = Server(host, port)
 c = Client(host, port)
