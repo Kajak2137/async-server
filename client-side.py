@@ -27,24 +27,6 @@ class Client(asyncore.dispatcher_with_send):
             except socket.error:
                     if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
                         time.sleep(0)
-                        continue
-      #  while 1:
-      #         sleep(1)
-      #         self.x = data
-      #          if data is self.x:
-      #          	print "Nothing changed"
-      #          else: 
-      #          	print "data changed"
-    
-   # def handle_open(self):
-   #     self.x = data
-   #     while data is self.x:
-    #        webbrowser.open(data, new=2);
-    #        print "Browser Opened"
-   #         break
-   #     else:
-    #       print "link changed"
-    #       webbrowser.open(data, new=2); 
-                
+                        continue                   
 c = Client(host, port)
 asyncore.loop()

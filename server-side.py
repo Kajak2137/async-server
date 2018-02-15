@@ -1,9 +1,7 @@
 import asyncore, socket, webbrowser
-from time import ctime, sleep
-from random import randint
 host = ''
 port = 1488
-clients = []
+nickname  = 'TestKajak'
 
 class Server(asyncore.dispatcher):
     def __init__(self, host, port):
@@ -26,18 +24,17 @@ class EchoHandler(asyncore.dispatcher_with_send):
     # buffer that it writes whenever there's content
 
     def handle_read(self):
-        link = raw_input('Enter Link: ')
-        self.out_buffer = link
-        print self.out_buffer
-        if not self.out_buffer:
+        data = raw_input('Enter Link: ')
+        self.send(data)
+        if not self.send:
             self.close()
-
+"""
 class Client(asyncore.dispatcher_with_send):
-    def __init__(self, host, port):
+    def __init__(self, host, port, nickname):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((host, port))
-        self.out_buffer = 'kajak'
+        self.out_buffer = nickname
 
     def handle_close(self):
         self.close()
@@ -52,9 +49,10 @@ class Client(asyncore.dispatcher_with_send):
             except socket.error:
                     if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
                         time.sleep(0)
-                        continue 
+                        continue  
+"""
 
 s = Server(host, port)
-c = Client(host, port)
+# c = Client(host, port, nickname)
 asyncore.loop()
 
