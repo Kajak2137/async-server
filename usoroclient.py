@@ -1,9 +1,10 @@
-import asyncore, socket
+#! /usr/bin/env python
+import asyncore, socket 
 import platform
 import webbrowser
 from time import ctime, sleep
 
-host = ''
+host = raw_input("What's the IP address of your PC?: ")
 # nickname = platform.node()
 port = 1488
 

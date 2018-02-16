@@ -24,35 +24,11 @@ class EchoHandler(asyncore.dispatcher_with_send):
     # buffer that it writes whenever there's content
 
     def handle_read(self):
-        data = raw_input('Enter Link: ')
+        data = raw_input('Enter link to send: ')
         self.send(data)
         if not self.send:
             self.close()
-"""
-class Client(asyncore.dispatcher_with_send):
-    def __init__(self, host, port, nickname):
-        asyncore.dispatcher.__init__(self)
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.connect((host, port))
-        self.out_buffer = nickname
-
-    def handle_close(self):
-        self.close()
-        print 'Going Offline'
-
-    def handle_read(self):
-        while 1:
-            try: 
-                data = self.recv(1024)
-                if data:
-                    webbrowser.open(data, new=2);
-            except socket.error:
-                    if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
-                        time.sleep(0)
-                        continue  
-"""
 
 s = Server(host, port)
-# c = Client(host, port, nickname)
 asyncore.loop()
 
