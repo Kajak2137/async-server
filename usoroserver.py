@@ -1,14 +1,18 @@
-import asyncore, socket, webbrowser
+#! /usr/bin/env python
+import asyncore, socket
+from getip import broadcast_IP
 host = ''
 port = 1488
-nickname  = 'TestKajak'
+
 
 class Server(asyncore.dispatcher):
     def __init__(self, host, port):
         asyncore.dispatcher.__init__(self)
+        self.Broadcaster()
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
-        print  "Listening on port", port
+        print "Please open UsoroClient on your second device"
+        print  "Waiting for Connection"
         self.bind(('', port))
         self.listen(5)
 
@@ -19,6 +23,10 @@ class Server(asyncore.dispatcher):
         print 'Connection by', address
         EchoHandler(socket)
 
+    def Broadcaster(self):
+        broadcast_IP(54545)
+
+
 class EchoHandler(asyncore.dispatcher_with_send):
     # dispatcher_with_send extends the basic dispatcher to have an output
     # buffer that it writes whenever there's content
@@ -28,7 +36,7 @@ class EchoHandler(asyncore.dispatcher_with_send):
         self.send(data)
         if not self.send:
             self.close()
-
+        
 s = Server(host, port)
 asyncore.loop()
 

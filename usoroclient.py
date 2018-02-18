@@ -3,10 +3,21 @@ import asyncore, socket
 import platform
 import webbrowser
 from time import ctime, sleep
+from getip import get_ip
 
-host = raw_input("What's the IP address of your PC?: ")
-# nickname = platform.node()
+host = 0
+
+
+def IPFinder(address, port):
+    print "Finding Server IP, make sure you have UsoroServer running on your device!"
+    getip=get_ip(address, port)
+    global host
+    host = unicode(getip.handle_read()) 
+    return 0
+
+
 port = 1488
+
 
 class Client(asyncore.dispatcher_with_send):
     def __init__(self, host, port):
@@ -24,10 +35,13 @@ class Client(asyncore.dispatcher_with_send):
             try: 
                 data = self.recv(1024)
                 if data:
-                	webbrowser.open(data, new=2);
+                    webbrowser.open(data, new=2);
             except socket.error:
                     if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
                         time.sleep(0)
-                        continue                   
+                        continue
+
+
+i = IPFinder('<broadcast>', 54545)                    
 c = Client(host, port)
 asyncore.loop()
