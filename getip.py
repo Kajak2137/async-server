@@ -16,13 +16,14 @@ class get_ip(asyncore.dispatcher):
         while 1:
             try:
                 recv_data, addr = self.recvfrom(1500)
-                self.IP=addr[0]
-                return self.IP
+                ip = addr[0]
+                return ip
                 self.handle_close()
             except socket.error:
                         if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
                                 time.sleep(0)
                                 continue
+
 
     def writable(self):
         return False

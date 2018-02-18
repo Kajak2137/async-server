@@ -8,14 +8,15 @@ receiveChoice = ['r', 'receive']
 def choicefunction():
     if choice in sendChoice:
         import usoroserver
-    if choice in recieveChoice:
+    elif choice in receiveChoice:
         import usoroclient
     else:
         print "Invalid input, exiting"
         exit(1)
+    return 1
 
 
-c = choiceFunction()
+c = choicefunction()
 
 
 

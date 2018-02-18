@@ -36,7 +36,8 @@ class EchoHandler(asyncore.dispatcher_with_send):
         self.send(data)
         if not self.send:
             self.close()
-        
+
+
 s = Server(host, port)
 asyncore.loop()
 
