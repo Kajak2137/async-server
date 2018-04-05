@@ -19,8 +19,9 @@ class Client(asyncore.dispatcher_with_send):
     def __init__(self):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.set_reuse_addr()
         self.connect((host, port))
-        self.out_buffer = 'kajak'
+        self.out_buffer = socket.gethostname()
 
     def handle_close(self):
         print "Closing"

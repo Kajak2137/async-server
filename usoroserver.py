@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 import asyncore, socket
+from time import sleep
+
 from getip import BroadcastIP
 port = 1488
 
@@ -19,9 +21,10 @@ class Server(asyncore.dispatcher):
         # when we get a client connection start a dispatcher for that
         # client
         sock, addr = self.accept()
-        print 'Connection by', addr
+        nickname = sock.recv(64)
+        print ("Connection by %s, %s" % (nickname, addr[0]))
         EchoHandler(socket)
-
+        
 
 def broadcaster():
     BroadcastIP()
