@@ -1,16 +1,17 @@
 import Queue
 import asyncore, socket
+
 host = '<broadcast>'
 port = 54545
 data = "Request"
 
 
-class get_ip(asyncore.dispatcher):
-    def __init__(self, host, port):
+class GetIP(asyncore.dispatcher):
+    def __init__(self):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.sendto(data, ('<broadcast>',54545))
+        self.sendto(data, ('<broadcast>', 54545))
 
     def handle_read(self):
         while 1:
@@ -20,10 +21,9 @@ class get_ip(asyncore.dispatcher):
                 return ip
                 self.handle_close()
             except socket.error:
-                        if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
-                                time.sleep(0)
-                                continue
-
+                if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
+                    time.sleep(0)
+                    continue
 
     def writable(self):
         return False
@@ -34,8 +34,8 @@ class get_ip(asyncore.dispatcher):
         self.close()
 
 
-class broadcast_IP(asyncore.dispatcher):
-    def __init__(self, port):
+class BroadcastIP(asyncore.dispatcher):
+    def __init__(self):
         asyncore.dispatcher.__init__(self)
         self.callback = None
         self.port = port
@@ -48,12 +48,11 @@ class broadcast_IP(asyncore.dispatcher):
         pass
 
     def handle_read(self):
-            recv_data, addr = self.recvfrom(1500)
-            self.sendto("*"+recv_data, addr)
-            self.handle_close()
+        recv_data, addr = self.recvfrom(1500)
+        self.sendto("*" + recv_data, addr)
+        self.handle_close()
 
     def handle_close(self):
         asyncore.dispatcher.close(self)
         print "Closing"
         self.close()
-

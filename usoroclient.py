@@ -1,23 +1,22 @@
 #! /usr/bin/env python
-import asyncore, socket 
-import platform
+import asyncore, socket
 import webbrowser
 from time import ctime, sleep
-from getip import get_ip
+from getip import GetIP
 host = None
 port = 1488
 
 
-def ipfinder(address, port):
+def ipfinder():
     print "Finding Server IP, make sure you have UsoroServer running on your device!"
-    getip = get_ip(address, port)
+    ip = GetIP()
     global host
-    host = unicode(getip.handle_read()) 
+    host = unicode(ip.handle_read())
     return 1
 
 
 class Client(asyncore.dispatcher_with_send):
-    def __init__(self, host, port):
+    def __init__(self):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((host, port))
@@ -39,6 +38,6 @@ class Client(asyncore.dispatcher_with_send):
                         continue
 
 
-i = ipfinder('<broadcast>', 54545)
-c = Client(host, port)
+i = ipfinder()
+c = Client()
 asyncore.loop()
