@@ -1,44 +1,39 @@
 #! /usr/bin/env python
 import asyncore, socket
-import webbrowser
-from time import ctime, sleep
-from getip import GetIP
-host = None
-port = 1488
+from getip import get_ip
 
 
 def ipfinder():
+    address = '<brodcast>'
     print "Finding Server IP, make sure you have UsoroServer running on your device!"
-    ip = GetIP()
-    global host
-    host = unicode(ip.handle_read())
-    return 1
+    getip = get_ip(address, port)
+    print "IP Found, connecting!"
+    ip = unicode(getip.handle_read())
+    print ip
+    return ip
 
 
-class Client(asyncore.dispatcher_with_send):
-    def __init__(self):
+host = "192.168.1.110"
+# host = raw_input("Input the Phone IP: ")
+port = 1488
+
+
+class Client(asyncore.dispatcher):
+    def __init__(self, data):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
-        self.connect((host, port))
-        self.out_buffer = socket.gethostname()
-
-    def handle_close(self):
-        print "Closing"
-        self.close()
-
-    def handle_read(self):
-        while 1:
-            try: 
-                data = self.recv(1024)
-                if data:
-                    webbrowser.open(data, new=2)
-            except socket.error:
-                    if str(socket.error) == "[Errno 35] Resource temporarily unavailable":
-                        sleep(0)
-                        continue
+        self.socket.setblocking(True)
+        try:
+            self.connect((host, port))
+            self.send(data)
+        except Exception as e:
+            print("Connection failed " + "Error: " + str(e))
+        else:
+            print("Connected successful")
+            self.close()
 
 
-i = ipfinder()
-c = Client()
-asyncore.loop()
+def sendmsg(msg):
+    Client(msg)
+    asyncore.loop(1)

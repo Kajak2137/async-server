@@ -1,45 +1,53 @@
 #! /usr/bin/env python
-import asyncore, socket
-from time import sleep
+import asyncore
+import socket
+import webbrowser
+import pyperclip
+from getip import broadcast_IP
+import config
 
-from getip import BroadcastIP
+host = ''
 port = 1488
 
 
 class Server(asyncore.dispatcher):
     def __init__(self):
         asyncore.dispatcher.__init__(self)
-        broadcaster()
+        # broadcaster()
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
-        print "Please open UsoroClient on your second device"
-        print "Waiting for Connection"
         self.bind(('', port))
         self.listen(5)
+        print "Waiting for Connection"
 
     def handle_accept(self):
         # when we get a client connection start a dispatcher for that
         # client
-        sock, addr = self.accept()
-        nickname = sock.recv(64)
-        print ("Connection by %s, %s" % (nickname, addr[0]))
-        EchoHandler(socket)
-        
+        sock, address = self.accept()
+        sock.setblocking(True)
+        print 'Connection by', address[0]
+        EchoHandler(sock)
+
 
 def broadcaster():
-    BroadcastIP()
+    broadcast_IP(54545)
 
 
 class EchoHandler(asyncore.dispatcher_with_send):
     # dispatcher_with_send extends the basic dispatcher to have an output
     # buffer that it writes whenever there's content
-
     def handle_read(self):
-        data = raw_input('Enter link to send: ')
-        self.send(data)
-        if not self.send:
-            self.close()
-
-
+        data = self.recv(1024)
+        print data
+        config.msg = data
+        if data:
+            if data.startswith("CB"):
+                data = data.replace("CB", "")
+                print("Got " + data + " Adding to clipboard.")
+                pyperclip.copy(data)
+            elif data.startswith('http' or 'www'):
+                print data
+                webbrowser.open(data)
 s = Server()
 asyncore.loop()
+
